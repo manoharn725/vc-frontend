@@ -2,6 +2,8 @@ import { useState } from "react";
 import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
 import withAuthLayout from "../../../hoc/withAuthLayout";
+import { useAuth } from "../../../context/AuthContext";
+import { api } from "../../../utils/api";
 
 const initialUserState = {
   userEmail: "",
@@ -30,33 +32,30 @@ const Signin = () => {
     },
   ];
 
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserLoginInfo((prev) => ({...prev, [name]:value}))
-}
-console.log(userLoginInfo)
+    setUserLoginInfo((prev) => ({ ...prev, [name]: value }));
+  };
+  console.log(userLoginInfo);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(userLoginInfo)
+    console.log(userLoginInfo);
     try {
-      const res = await fetch("http://localhost:5000/api/users/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userLoginInfo),
-      });
-
-      const data = await res.json();
-    //   console.log(data); // backend response
-    setUserLoginInfo(initialUserState)
+      const data = await api.signin(userLoginInfo);
+      login(data.user, data.token);
+      //   console.log(data); // backend response
+      setUserLoginInfo(initialUserState);
     } catch (err) {
       console.error("API error:", err);
     }
-  }
+  };
 
   const handleNavigate = () => {
-    console.log("Navigate to forgot password")
-  }
+    console.log("Navigate to forgot password");
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -72,7 +71,12 @@ console.log(userLoginInfo)
           onChange={handleChange}
         />
       ))}
-      <p className="mb-3 text-sm text-blue-500 cursor-pointer" onClick={handleNavigate}>Forgot Password ?</p>
+      <p
+        className="mb-3 text-sm text-blue-500 cursor-pointer"
+        onClick={handleNavigate}
+      >
+        Forgot Password ?
+      </p>
       <Button
         type="submit"
         label="Login"
@@ -83,4 +87,4 @@ console.log(userLoginInfo)
     </form>
   );
 };
-export default withAuthLayout(Signin, 'Login');
+export default withAuthLayout(Signin, "Login");
