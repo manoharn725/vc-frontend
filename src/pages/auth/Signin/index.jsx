@@ -34,7 +34,7 @@ const Signin = () => {
     },
   ];
 
-  const { login } = useAuth();
+  const { storeAuthData } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,9 +47,10 @@ const Signin = () => {
     console.log(userLoginInfo);
     try {
       const data = await api.signin(userLoginInfo);
-      login(data.user, data.token);
+      storeAuthData(data.user, data.token);
       //   console.log(data); // backend response
       setUserLoginInfo(initialUserState);
+      navigate("/dashboard")
     } catch (err) {
       console.error("API error:", err);
     }

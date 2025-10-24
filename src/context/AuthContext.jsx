@@ -3,36 +3,38 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
+  const [authUser, setAuthUser] = useState(() => {
+    const storedUser  = localStorage.getItem("authUser");
+    return storedUser  ? JSON.parse(storedUser ) : null;
   });
 
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem("token") || "";
+  const [authToken, setAuthToken] = useState(() => {
+    return localStorage.getItem("authToken") || "";
   });
 
   useEffect(() => {
-    if (user && token) {
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token);
+    if (authUser && authToken) {
+      localStorage.setItem("authUser", JSON.stringify(authUser));
+      localStorage.setItem("authToken", authToken);
     } else {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
+      localStorage.removeItem("authUser");
+      localStorage.removeItem("authToken");
     }
-  }, [user, token]);
+  }, [authUser, authToken]);
 
-  const login = (userData, tokenData) => {
-    setUser(userData);
-    setToken(tokenData);
+  const storeAuthData = (userData, tokenData) => {
+    setAuthUser(userData);
+    setAuthToken(tokenData);
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken("");
+  const clearAuthData = () => {
+    setAuthUser(null);
+    setAuthToken("");
   };
+ 
+  const isAuthenticated = !authToken;
 
-  const value = { user, token, login, logout, isAuthenticated: !token };
+  const value = { authUser, authToken, storeAuthData, clearAuthData, isAuthenticated };
 
   return (
   <AuthContext.Provider value={value}>
