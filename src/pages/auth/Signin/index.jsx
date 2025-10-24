@@ -4,6 +4,7 @@ import Button from "../../../components/ui/Button";
 import withAuthLayout from "../../../hoc/withAuthLayout";
 import { useAuth } from "../../../context/AuthContext";
 import { api } from "../../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const initialUserState = {
   userEmail: "",
@@ -12,6 +13,7 @@ const initialUserState = {
 
 const Signin = () => {
   const [userLoginInfo, setUserLoginInfo] = useState(initialUserState);
+  const navigate = useNavigate();
 
   const inputTypes = [
     {
@@ -53,8 +55,12 @@ const Signin = () => {
     }
   };
 
-  const handleNavigate = () => {
-    console.log("Navigate to forgot password");
+  const navigateToForgotPassword = () => {
+    navigate("/forgot-password");
+  };
+
+  const navigateToSignup = () => {
+    navigate("/signup");
   };
 
   return (
@@ -73,7 +79,7 @@ const Signin = () => {
       ))}
       <p
         className="mb-3 text-sm text-blue-500 cursor-pointer"
-        onClick={handleNavigate}
+        onClick={navigateToForgotPassword}
       >
         Forgot Password ?
       </p>
@@ -84,6 +90,15 @@ const Signin = () => {
         isFullWidth={true}
         className="mb-2"
       />
+      <p className="text-center mt-3 text-sm">
+        Do you have an account ?{" "}
+        <span
+          className="text-blue-500 cursor-pointer"
+          onClick={navigateToSignup}
+        >
+          Sign up
+        </span>
+      </p>
     </form>
   );
 };

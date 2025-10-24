@@ -1,14 +1,13 @@
-import { ForgotPassword, ResetPassword, Signin, Signup } from "./pages/auth";
+import { AuthProvider } from "./context/AuthContext";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./AppRouter";
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <Signin />
-      <Signup />
-      <ForgotPassword />
-      <ResetPassword />
-    </>
+   <AuthProvider>
+    <RouterProvider router={router} />
+   </AuthProvider>
   );
 }
 

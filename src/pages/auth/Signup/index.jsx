@@ -2,6 +2,7 @@ import { useState } from "react";
 import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
 import withAuthLayout from "../../../hoc/withAuthLayout";
+import { useNavigate } from "react-router-dom";
 
 const initialUserState = {
   firstName: "",
@@ -14,6 +15,7 @@ const initialUserState = {
 
 const Signup = () => {
   const [userSignupDetails, setUserSigunupDetails] = useState(initialUserState);
+  const navigate = useNavigate();
 
   const inputTypes = [
     {
@@ -70,6 +72,10 @@ const Signup = () => {
     const {name, value} = e.target;
     setUserSigunupDetails(prev => ({...prev, [name]:value}))
   }
+
+  const navigateToSignin = () => {
+    navigate("/signin")
+  }
   return (
     <form>
       {inputTypes.map(({ id, name, label, type, placeholder, isRequired }) => (
@@ -92,6 +98,17 @@ const Signup = () => {
         isFullWidth={true}
         className="mb-2"
       />
+
+      <p className="text-center mt-3 text-sm">
+        Already have an account ?{" "}
+        <span
+          className="text-blue-500 cursor-pointer"
+          onClick={navigateToSignin}
+        >
+          Sign in
+        </span>
+      </p>
+
     </form>
   );
 };

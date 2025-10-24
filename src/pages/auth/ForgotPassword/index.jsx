@@ -2,6 +2,7 @@ import { useState } from "react";
 import ControlledInput from "../../../components/ControlledInput";
 import withAuthLayout from "../../../hoc/withAuthLayout";
 import Button from "../../../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 const initialUserState = {
   userEmail: "",
@@ -9,6 +10,7 @@ const initialUserState = {
 
 const ForgotPassword = () => {
   const [forgotPassword, setForgotPassword] = useState(initialUserState);
+  const navigate = useNavigate();
 
   const inputType = [
     {
@@ -26,8 +28,8 @@ const ForgotPassword = () => {
     setForgotPassword((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNavigate = () => {
-    console.log("Navigate to signin");
+  const navigateToSignin = () => {
+    navigate('/signin')
   };
 
   return (
@@ -59,7 +61,7 @@ const ForgotPassword = () => {
           isTeritary
           isFullWidth={true}
           className="mb-2"
-          onClick={handleNavigate}
+          onClick={navigateToSignin}
         />
       </form>
       <p className="mt-3 text-xs text-gray-600 cursor-pointer">
