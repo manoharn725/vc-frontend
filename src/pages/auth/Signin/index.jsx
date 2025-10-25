@@ -5,6 +5,7 @@ import withAuthLayout from "../../../hoc/withAuthLayout";
 import { useAuth } from "../../../context/AuthContext";
 import { api } from "../../../utils/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const initialUserState = {
   userEmail: "",
@@ -47,11 +48,13 @@ const Signin = () => {
     console.log(userLoginInfo);
     try {
       const data = await api.signin(userLoginInfo);
+      toast.success(data.message)
       storeAuthData(data.user, data.token);
       //   console.log(data); // backend response
       setUserLoginInfo(initialUserState);
       navigate("/dashboard")
     } catch (err) {
+      toast.error(err)
       console.error("API error:", err);
     }
   };

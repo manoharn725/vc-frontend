@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     setAuthToken("");
   };
  
-  const isAuthenticated = !authToken;
+  const isAuthenticated = !!authToken;
 
   const value = { authUser, authToken, storeAuthData, clearAuthData, isAuthenticated };
 

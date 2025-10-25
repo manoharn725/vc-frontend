@@ -22,23 +22,35 @@ export const api = {
         return res.json();
     },
 
+    signout: async (token) => {
+        const res = await fetch(`${baseUrl}/signout`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (!res.ok) throw new Error("Signout Failed!");
+        return res.json();
+    },
+
     forgotPassword: async (email) => {
         const res = await fetch(`${baseUrl}/forgot-password`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(email),
         });
-        if(!res.ok) throw new Error("Email is not found!");
+        if (!res.ok) throw new Error("Email is not found!");
         return res.json();
     },
 
     resetPassword: async (data) => {
         const res = await fetch(`${baseUrl}/reset-password`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         });
-        if(!res.ok) throw new Error("Reset failed");
+        if (!res.ok) throw new Error("Reset failed");
         return res.json()
     }
 }
