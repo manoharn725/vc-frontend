@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { api } from "../../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { validateAuthForm } from "../../../utils/validateAuthForm";
 
 const initialUserState = {
   userEmail: "",
@@ -14,6 +15,8 @@ const initialUserState = {
 
 const Signin = () => {
   const [userLoginInfo, setUserLoginInfo] = useState(initialUserState);
+  const [isLoading, setIsLoading] = useState(false);
+  const { storeAuthData } = useAuth();
   const navigate = useNavigate();
 
   const inputTypes = [
@@ -35,27 +38,32 @@ const Signin = () => {
     },
   ];
 
-  const { storeAuthData } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserLoginInfo((prev) => ({ ...prev, [name]: value }));
   };
-  console.log(userLoginInfo);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const isValid = validateAuthForm(userLoginInfo)
+    if (!isValid) return;
     console.log(userLoginInfo);
+    setIsLoading(true);
     try {
       const data = await api.signin(userLoginInfo);
-      toast.success(data.message)
+      console.log(data);
+      toast.success(data.message);
       storeAuthData(data.user, data.token);
       //   console.log(data); // backend response
       setUserLoginInfo(initialUserState);
-      navigate("/dashboard")
+      navigate("/dashboard");
     } catch (err) {
-      toast.error(err)
+      toast.error(err.message);
       console.error("API error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,12 +97,12 @@ const Signin = () => {
       </p>
       <Button
         type="submit"
-        label="Login"
+        label={isLoading ? "Logging in..." : "Login"}
         isSecondary
         isFullWidth={true}
-        className="mb-2"
+        className="mb-3"
       />
-      <p className="text-center mt-3 text-sm">
+      <p className="text-center text-sm">
         Do you have an account ?{" "}
         <span
           className="text-blue-500 cursor-pointer"

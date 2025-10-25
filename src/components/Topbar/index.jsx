@@ -22,7 +22,7 @@ const Topbar = () => {
   };
 
   return (
-    <section className="flex justify-between px-3 py-2 bg-blue-500">
+    <section className="flex justify-between px-3 py-2 bg-yellow-200">
       <img src="" alt="Logo" />
       <Button label="Signout" isSecondary onClick={handleSignout} />
     </section>

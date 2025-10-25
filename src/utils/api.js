@@ -1,15 +1,16 @@
+import { handleErrorResponse } from "./handleErrorResponse";
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const api = {
-
+    
     signin: async (credentials) => {
         const res = await fetch(`${baseUrl}/signin`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(credentials),
         });
-        if (!res.ok) throw new Error("signin failed");
-        return res.json();
+        return handleErrorResponse(res);
     },
 
     signup: async (userData) => {
@@ -18,8 +19,7 @@ export const api = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
         });
-        if (!res.ok) throw new Error("signup failed");
-        return res.json();
+        return handleErrorResponse(res);
     },
 
     signout: async (token) => {
@@ -30,8 +30,7 @@ export const api = {
                 Authorization: `Bearer ${token}`,
             },
         });
-        if (!res.ok) throw new Error("Signout Failed!");
-        return res.json();
+        return handleErrorResponse(res);
     },
 
     forgotPassword: async (email) => {
@@ -40,8 +39,7 @@ export const api = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(email),
         });
-        if (!res.ok) throw new Error("Email is not found!");
-        return res.json();
+        return handleErrorResponse(res);
     },
 
     resetPassword: async (data) => {
@@ -50,7 +48,6 @@ export const api = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         });
-        if (!res.ok) throw new Error("Reset failed");
-        return res.json()
+        return handleErrorResponse(res);
     }
 }

@@ -60,11 +60,11 @@ const ForgotPassword = () => {
           label="Back"
           isTeritary
           isFullWidth={true}
-          className="mb-2"
+          className="mb-3"
           onClick={navigateToSignin}
         />
       </form>
-      <p className="mt-3 text-xs text-gray-600 cursor-pointer">
+      <p className="text-xs text-gray-600 cursor-pointer">
         Can't remember your email? <br />
         Please contact your <b>adminstrator</b> for access.
       </p>

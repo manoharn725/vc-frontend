@@ -96,10 +96,10 @@ const Signup = () => {
         label="Sigin Up"
         isSecondary
         isFullWidth={true}
-        className="mb-2"
+        className="mb-3"
       />
 
-      <p className="text-center mt-3 text-sm">
+      <p className="text-center text-sm">
         Already have an account ?{" "}
         <span
           className="text-blue-500 cursor-pointer"
