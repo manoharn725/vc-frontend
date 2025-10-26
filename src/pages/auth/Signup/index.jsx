@@ -3,18 +3,22 @@ import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
 import withAuthLayout from "../../../hoc/withAuthLayout";
 import { useNavigate } from "react-router-dom";
+import { validateSignup } from "../../../utils/validation/validateSignup";
+import { api } from "../../../utils/api";
+import { toast } from "react-toastify";
 
 const initialUserState = {
   firstName: "",
   lastName: "",
   phoneNumber: "",
-  email: "",
+  userEmail: "",
   createPassword: "",
   confirmPassword: "",
 };
 
 const Signup = () => {
   const [userSignupDetails, setUserSigunupDetails] = useState(initialUserState);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const inputTypes = [
@@ -44,7 +48,7 @@ const Signup = () => {
     },
     {
       id: 4,
-      name: "email",
+      name: "userEmail",
       label: "Email",
       type: "text",
       placeholder: "Enter your Email",
@@ -73,11 +77,32 @@ const Signup = () => {
     setUserSigunupDetails(prev => ({...prev, [name]:value}))
   }
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const isValid = validateSignup(userSignupDetails);
+    if(!isValid) return;
+
+    setIsLoading(true);
+    try{
+      const data = await api.signup(userSignupDetails);
+      toast.success(data.message);
+      navigate("/signin");
+    } catch (err) {
+      console.log("signup failed");
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+
+  }
+
   const navigateToSignin = () => {
     navigate("/signin")
   }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       {inputTypes.map(({ id, name, label, type, placeholder, isRequired }) => (
         <ControlledInput
           key={id}
@@ -93,7 +118,7 @@ const Signup = () => {
 
       <Button
         type="submit"
-        label="Sigin Up"
+        label={isLoading ? "Signing in..." : "Sigin Up"}
         isSecondary
         isFullWidth={true}
         className="mb-3"

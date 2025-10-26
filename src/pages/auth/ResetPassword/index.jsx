@@ -2,6 +2,10 @@ import { useState } from "react";
 import withAuthLayout from "../../../hoc/withAuthLayout";
 import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
+import { validateResetPassword } from "../../../utils/validation/validateResetPassword";
+import { api } from "../../../utils/api";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const initialUserState = {
   newPassword: "",
@@ -10,6 +14,8 @@ const initialUserState = {
 
 const ResetPassword = () => {
   const [resetPasswrod, setResetPassword] = useState(initialUserState);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const inputTypes = [
     {
@@ -35,8 +41,27 @@ const ResetPassword = () => {
     setResetPassword((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const isValid = validateResetPassword(resetPasswrod);
+    if (!isValid) return;
+
+    setIsLoading(true);
+    try {
+      const data = await api.resetPassword(resetPasswrod);
+      toast.success(data.messsage);
+      navigate("/signin");
+    } catch (err) {
+      console.log("error");
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       {inputTypes.map(({ id, name, label, type, placeholder, isRequired }) => (
         <ControlledInput
           key={id}
@@ -51,7 +76,7 @@ const ResetPassword = () => {
       ))}
       <Button
         type="submit"
-        label="Reset Password"
+        label={isLoading ? "loading" : "Reset Password"}
         isSecondary
         isFullWidth={true}
         className="mb-2"

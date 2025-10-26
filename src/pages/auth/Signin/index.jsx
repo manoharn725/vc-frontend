@@ -6,7 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { api } from "../../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { validateAuthForm } from "../../../utils/validateAuthForm";
+import { validateSignin } from "../../../utils/validation/validateSignin";
 
 const initialUserState = {
   userEmail: "",
@@ -47,10 +47,11 @@ const Signin = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const isValid = validateAuthForm(userLoginInfo)
+    const isValid = validateSignin(userLoginInfo)
     if (!isValid) return;
     console.log(userLoginInfo);
     setIsLoading(true);
+    
     try {
       const data = await api.signin(userLoginInfo);
       console.log(data);
