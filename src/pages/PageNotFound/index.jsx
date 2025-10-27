@@ -4,7 +4,8 @@ import withAuthLayout from "../../hoc/withAuthLayout";
 
 const PageNotFound = () => {
   const navigate = useNavigate();
-  const handleNavigate = () => {
+  const handleNavigate = (e) => {
+    e.preventDefault();
     navigate("/signin");
   };
   return (
