@@ -1,11 +1,12 @@
 import { useState } from "react";
-import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
 import withAuthLayout from "../../../hoc/withAuthLayout";
 import { useNavigate } from "react-router-dom";
 import { validateSignup } from "../../../utils/validation/validateSignup";
 import { api } from "../../../utils/api";
 import { toast } from "react-toastify";
+import AuthInputGenerator from "../../../components/AuthInputGenerator";
+import { useAuthForm } from "../../../hooks/useAuthForm";
 
 const initialUserState = {
   firstName: "",
@@ -17,8 +18,8 @@ const initialUserState = {
 };
 
 const Signup = () => {
-  const [userSignupDetails, setUserSigunupDetails] = useState(initialUserState);
   const [isLoading, setIsLoading] = useState(false);
+  const { formState, handleChange, resetForm } = useAuthForm(initialUserState);
   const navigate = useNavigate();
 
   const inputTypes = [
@@ -72,53 +73,42 @@ const Signup = () => {
     },
   ];
 
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-    setUserSigunupDetails(prev => ({...prev, [name]:value}))
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const isValid = validateSignup(userSignupDetails);
-    if(!isValid) return;
+    const isValid = validateSignup(formState);
+    if (!isValid) return;
 
     setIsLoading(true);
-    try{
-      const data = await api.signup(userSignupDetails);
-      toast.success(data.message);
+    try {
+      const data = await api.signup(formState);
       navigate("/signin");
+      toast.success(data.message);
+      resetForm();
     } catch (err) {
       console.log("signup failed");
       toast.error(err.message);
     } finally {
       setIsLoading(false);
     }
-
-  }
+  };
 
   const navigateToSignin = () => {
-    navigate("/signin")
-  }
+    navigate("/signin");
+  };
 
   return (
     <form onSubmit={handleSubmit}>
-      {inputTypes.map(({ id, name, label, type, placeholder, isRequired }) => (
-        <ControlledInput
-          key={id}
-          type={type}
-          name={name}
-          label={label}
-          value={userSignupDetails[name]}
-          placeholder={placeholder}
-          isRequired={isRequired}
-          onChange={handleChange}
-        />
-      ))}
+      <AuthInputGenerator
+        fields={inputTypes}
+        formState={formState}
+        onChange={handleChange}
+      />
 
       <Button
         type="submit"
-        label={isLoading ? "Signing in..." : "Sigin Up"}
+        label={isLoading ? "Signing up..." : "Sign Up"}
+        disabled={isLoading}
         isSecondary
         isFullWidth={true}
         className="mb-3"
@@ -133,8 +123,7 @@ const Signup = () => {
           Sign in
         </span>
       </p>
-
     </form>
   );
 };
-export default withAuthLayout(Signup, 'Sign Up');
+export default withAuthLayout(Signup, "Sign Up");

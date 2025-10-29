@@ -1,11 +1,12 @@
 import { useState } from "react";
 import withAuthLayout from "../../../hoc/withAuthLayout";
-import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
 import { validateResetPassword } from "../../../utils/validation/validateResetPassword";
 import { api } from "../../../utils/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import AuthInputGenerator from "../../../components/AuthInputGenerator";
+import { useAuthForm } from "../../../hooks/useAuthForm";
 
 const initialUserState = {
   newPassword: "",
@@ -13,8 +14,8 @@ const initialUserState = {
 };
 
 const ResetPassword = () => {
-  const [resetPasswrod, setResetPassword] = useState(initialUserState);
   const [isLoading, setIsLoading] = useState(false);
+  const { formState, handleChange, resetState } = useAuthForm(initialUserState);
   const navigate = useNavigate();
 
   const inputTypes = [
@@ -22,7 +23,7 @@ const ResetPassword = () => {
       id: 1,
       name: "newPassword",
       label: "New Password",
-      type: "text",
+      type: "password",
       placeholder: "Create new passowrd",
       isRequired: true,
     },
@@ -36,22 +37,18 @@ const ResetPassword = () => {
     },
   ];
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setResetPassword((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValid = validateResetPassword(resetPasswrod);
+    const isValid = validateResetPassword(formState);
     if (!isValid) return;
 
     setIsLoading(true);
     try {
-      const data = await api.resetPassword(resetPasswrod);
-      toast.success(data.messsage);
+      const data = await api.resetPassword(formState);
       navigate("/signin");
+      toast.success(data.message);
+      resetState();
     } catch (err) {
       console.log("error");
       toast.error(err.message);
@@ -62,21 +59,15 @@ const ResetPassword = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {inputTypes.map(({ id, name, label, type, placeholder, isRequired }) => (
-        <ControlledInput
-          key={id}
-          type={type}
-          name={name}
-          label={label}
-          value={resetPasswrod[name]}
-          placeholder={placeholder}
-          isRequired={isRequired}
-          onChange={handleChange}
-        />
-      ))}
+      <AuthInputGenerator
+        fields={inputTypes}
+        formState={formState}
+        onChange={handleChange}
+      />
       <Button
         type="submit"
-        label={isLoading ? "loading" : "Reset Password"}
+        label={isLoading ? "Resetting..." : "Reset Password"}
+        disabled={isLoading}
         isSecondary
         isFullWidth={true}
         className="mb-2"

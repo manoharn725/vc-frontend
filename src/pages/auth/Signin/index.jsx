@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ControlledInput from "../../../components/ControlledInput";
 import Button from "../../../components/ui/Button";
 import withAuthLayout from "../../../hoc/withAuthLayout";
 import { useAuth } from "../../../context/AuthContext";
@@ -7,6 +6,8 @@ import { api } from "../../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { validateSignin } from "../../../utils/validation/validateSignin";
+import AuthInputGenerator from "../../../components/AuthInputGenerator";
+import { useAuthForm } from "../../../hooks/useAuthForm";
 
 const initialUserState = {
   userEmail: "",
@@ -14,9 +15,9 @@ const initialUserState = {
 };
 
 const Signin = () => {
-  const [userLoginInfo, setUserLoginInfo] = useState(initialUserState);
   const [isLoading, setIsLoading] = useState(false);
   const { storeAuthData } = useAuth();
+  const { formState, handleChange, resetForm } = useAuthForm(initialUserState);
   const navigate = useNavigate();
 
   const inputTypes = [
@@ -38,28 +39,20 @@ const Signin = () => {
     },
   ];
 
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserLoginInfo((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const isValid = validateSignin(userLoginInfo)
+    const isValid = validateSignin(formState);
     if (!isValid) return;
-    console.log(userLoginInfo);
+    console.log(formState);
     setIsLoading(true);
-    
+
     try {
-      const data = await api.signin(userLoginInfo);
-      console.log(data);
-      toast.success(data.message);
+      const data = await api.signin(formState);
       storeAuthData(data.user, data.token);
-      //   console.log(data); // backend response
-      setUserLoginInfo(initialUserState);
       navigate("/dashboard");
+      toast.success(data.message);
+      resetForm();
     } catch (err) {
       toast.error(err.message);
       console.error("API error:", err);
@@ -78,18 +71,12 @@ const Signin = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {inputTypes.map(({ id, name, label, type, placeholder, isRequired }) => (
-        <ControlledInput
-          key={id}
-          type={type}
-          name={name}
-          label={label}
-          value={userLoginInfo[name]}
-          placeholder={placeholder}
-          isRequired={isRequired}
-          onChange={handleChange}
-        />
-      ))}
+      <AuthInputGenerator
+        fields={inputTypes}
+        formState={formState}
+        onChange={handleChange}
+      />
+
       <p
         className="mb-3 text-sm text-blue-500 cursor-pointer"
         onClick={navigateToForgotPassword}
@@ -99,6 +86,7 @@ const Signin = () => {
       <Button
         type="submit"
         label={isLoading ? "Logging in..." : "Login"}
+        disabled={isLoading}
         isSecondary
         isFullWidth={true}
         className="mb-3"

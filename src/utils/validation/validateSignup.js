@@ -24,6 +24,17 @@ export const validateSignup = ({ firstName, lastName, phoneNumber, userEmail, cr
         return false;
     }
 
+    // ✅ Strong password rule: uppercase, lowercase, number, special char
+    const strongPasswordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
+
+    if (!strongPasswordRegex.test(createPassword)) {
+        toast.warning(
+            "Password must include at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+        );
+        return false;
+    }
+
     if (createPassword !== confirmPassword) {
         toast.warning("Password doesn't match");
         return false;
