@@ -62,7 +62,7 @@ const ResetPassword = () => {
   return (
     <form onSubmit={handleSubmit}>
       <label className="block mb-1 text-sm font-medium text-gray-700">
-        Verification Code
+        Verification Code <span className="text-red-500"> *</span>
       </label>
       <VerificationCodeInput
         length={6}

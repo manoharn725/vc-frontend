@@ -30,6 +30,7 @@ const VerificationCodeInput = ({ length = 6, onChange }) => {
           ref={(el) => (inputRef.current[index] = el)}
           onChange={(e) => handleChange(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
+          required={true}
           className="w-10 h-10 text-center text-lg font-semibold border rounded-md border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       ))}
