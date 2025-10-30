@@ -7,8 +7,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import AuthInputGenerator from "../../../components/AuthInputGenerator";
 import { useAuthForm } from "../../../hooks/useAuthForm";
+import VerificationCodeInput from "../../../components/VerificationCodeInput";
 
 const initialUserState = {
+  verificationCode: "",
   newPassword: "",
   confirmPassword: "",
 };
@@ -59,6 +61,15 @@ const ResetPassword = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <label className="block mb-1 text-sm font-medium text-gray-700">
+        Verification Code
+      </label>
+      <VerificationCodeInput
+        length={6}
+        onChange={(code) =>
+          handleChange({ target: { name: "verificationCode", value: code } })
+        }
+      />
       <AuthInputGenerator
         fields={inputTypes}
         formState={formState}
