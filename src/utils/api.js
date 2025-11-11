@@ -33,11 +33,11 @@ export const api = {
         return handleErrorResponse(res);
     },
 
-    forgotPassword: async (email) => {
+    forgotPassword: async (userEmail) => {
         const res = await fetch(`${baseUrl}/forgot-password`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(email),
+            body: JSON.stringify(userEmail),
         });
         return handleErrorResponse(res);
     },
