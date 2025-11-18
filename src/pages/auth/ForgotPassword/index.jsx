@@ -14,7 +14,7 @@ const initialUserState = {
 
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { formState, handleChange, resetState } = useAuthForm(initialUserState);
+  const { formState, handleChange, resetForm } = useAuthForm(initialUserState);
   const navigate = useNavigate();
 
   const inputTypes = [
@@ -40,7 +40,7 @@ const ForgotPassword = () => {
       const data = await api.forgotPassword(formState);
       navigate("/reset-password");
       toast.success(data.message);
-      resetState();
+      resetForm();
     } catch (err) {
       console.log(err.message);
       toast.error(err.message);
