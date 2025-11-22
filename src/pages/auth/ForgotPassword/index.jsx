@@ -55,6 +55,7 @@ const ForgotPassword = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {isLoading && <p className="mb-3 text-center text-sm text-white bg-amber-400 cursor-pointer">Please expect a delay while sending mail...</p>}
       <p className="mb-3 text-sm text-gray-600 cursor-pointer">
         Verify your email to get password reset instructions
       </p>
@@ -62,7 +63,7 @@ const ForgotPassword = () => {
         fields={inputTypes}
         formState={formState}
         onChange={handleChange}
-      />
+        />
       <Button
         type="submit"
         label={isLoading ? "Sending..." : "Forgot Password"}
@@ -70,7 +71,7 @@ const ForgotPassword = () => {
         isSecondary
         isFullWidth={true}
         className="mb-2"
-      />
+        />
       <Button
         type="button"
         label="Back"
@@ -78,7 +79,7 @@ const ForgotPassword = () => {
         isFullWidth={true}
         className="mb-3"
         onClick={navigateToSignin}
-      />
+        />
       <p className="text-xs text-gray-600 cursor-pointer">
         Can't remember your email? <br />
         Please contact your <b>adminstrator</b> for access.
